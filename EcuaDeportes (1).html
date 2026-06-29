@@ -1,0 +1,1437 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>EcuaDeportes — Mundial 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.31.0/dist/tabler-icons.min.css"/>
+<style>
+/* ===========================
+   EcuaDeportes — main.css
+   =========================== */
+
+/* ---- Tokens ---- */
+:root {
+  --bg:        #0d0d0d;
+  --bg-2:      #141414;
+  --bg-3:      #1c1c1c;
+  --bg-4:      #232323;
+  --border:    rgba(255,255,255,0.08);
+  --border-md: rgba(255,255,255,0.14);
+
+  --green:     #0a7a46;
+  --green-lt:  #11a85f;
+  --green-dim: rgba(10,122,70,0.15);
+  --gold:      #c9a84c;
+  --gold-dim:  rgba(201,168,76,0.12);
+  --red:       #e63030;
+  --red-dim:   rgba(230,48,48,0.15);
+  --blue:      #3b82f6;
+
+  --text-1:    #f0f0eb;
+  --text-2:    #9a9a95;
+  --text-3:    #5a5a58;
+
+  --font-ui:   'Inter', system-ui, sans-serif;
+  --font-sport:'Barlow Condensed', sans-serif;
+
+  --ticker-h:  36px;
+  --nav-h:     56px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+
+  --sidebar-w: 210px;
+}
+
+/* ---- Reset ---- */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  background: var(--bg);
+  color: var(--text-1);
+  font-family: var(--font-ui);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+button { cursor: pointer; font-family: inherit; border: none; background: none; }
+a { color: inherit; text-decoration: none; }
+
+/* ---- Ticker ---- */
+.ticker-bar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: var(--ticker-h);
+  background: var(--green);
+  display: flex;
+  align-items: center;
+  z-index: 100;
+  overflow: hidden;
+}
+.ticker-label {
+  font-family: var(--font-sport);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #fff;
+  background: rgba(0,0,0,0.25);
+  padding: 0 14px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.ticker-track {
+  flex: 1;
+  overflow: hidden;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+.ticker-inner {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  white-space: nowrap;
+  animation: ticker-scroll 40s linear infinite;
+  font-family: var(--font-sport);
+  font-size: 13px;
+  font-weight: 500;
+  color: #fff;
+}
+.ticker-item {
+  padding: 0 28px;
+  border-right: 1px solid rgba(255,255,255,0.2);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.ticker-score {
+  font-weight: 700;
+  font-size: 14px;
+}
+@keyframes ticker-scroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* ---- Topnav ---- */
+.topnav {
+  position: fixed;
+  top: var(--ticker-h);
+  left: 0; right: 0;
+  height: var(--nav-h);
+  background: var(--bg-2);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  gap: 24px;
+  z-index: 90;
+}
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+.logo-icon {
+  width: 32px; height: 32px;
+  border-radius: 8px;
+  background: var(--green);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: #fff;
+}
+.logo-text {
+  font-family: var(--font-sport);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-1);
+  letter-spacing: 0.03em;
+}
+.main-nav {
+  display: flex;
+  gap: 2px;
+  flex: 1;
+}
+.nav-btn {
+  padding: 7px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-2);
+  transition: color 0.15s, background 0.15s;
+}
+.nav-btn:hover { color: var(--text-1); background: var(--bg-3); }
+.nav-btn.active {
+  color: var(--text-1);
+  background: var(--green-dim);
+  color: var(--green-lt);
+}
+.nav-right { margin-left: auto; }
+.sync-indicator {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  color: var(--text-3);
+  padding: 5px 12px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+}
+.sync-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: #22c55e;
+  flex-shrink: 0;
+}
+.sync-dot.loading { background: var(--gold); animation: pulse 1s ease-in-out infinite; }
+.sync-dot.error   { background: var(--red); }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+/* ---- Layout ---- */
+.layout {
+  display: grid;
+  grid-template-columns: var(--sidebar-w) 1fr var(--sidebar-w);
+  min-height: 100vh;
+  padding-top: calc(var(--ticker-h) + var(--nav-h));
+}
+
+/* ---- Sidebars ---- */
+.sidebar {
+  background: var(--bg-2);
+  padding: 20px 12px;
+  position: sticky;
+  top: calc(var(--ticker-h) + var(--nav-h));
+  height: calc(100vh - var(--ticker-h) - var(--nav-h));
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.sidebar--left  { border-right: 1px solid var(--border); }
+.sidebar--right { border-left:  1px solid var(--border); }
+
+.sidebar-section { margin-bottom: 24px; }
+.sidebar-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  padding: 0 8px;
+  margin-bottom: 6px;
+}
+.sidebar-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  color: var(--text-2);
+  transition: color 0.15s, background 0.15s;
+  text-align: left;
+}
+.sidebar-btn:hover { background: var(--bg-3); color: var(--text-1); }
+.sidebar-btn.active {
+  background: var(--green-dim);
+  color: var(--green-lt);
+  font-weight: 500;
+}
+.sidebar-btn i { font-size: 16px; flex-shrink: 0; }
+.flag { font-size: 15px; }
+
+/* ---- Main content ---- */
+.content {
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+/* ---- Hero stats ---- */
+.hero-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+.stat-card {
+  background: var(--bg-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+}
+.stat-card--live { border-color: var(--red-dim); background: var(--red-dim); }
+.stat-label {
+  font-size: 11px;
+  color: var(--text-3);
+  margin-bottom: 4px;
+}
+.stat-value {
+  font-family: var(--font-sport);
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--text-1);
+  line-height: 1;
+}
+.stat-card--live .stat-value { color: var(--red); }
+.stat-value--sm { font-size: 18px; padding-top: 4px; }
+.stat-sub { font-size: 11px; color: var(--text-3); margin-top: 4px; }
+
+/* ---- Section ---- */
+.content-section { display: flex; flex-direction: column; gap: 12px; }
+.content-section.hidden { display: none; }
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.section-title {
+  font-family: var(--font-sport);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-1);
+  letter-spacing: 0.03em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.live-dot-inline {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--red);
+  animation: pulse 1.2s ease-in-out infinite;
+  flex-shrink: 0;
+}
+.link-btn {
+  font-size: 12px;
+  color: var(--green-lt);
+  opacity: 0.8;
+  transition: opacity 0.15s;
+}
+.link-btn:hover { opacity: 1; }
+
+/* ---- Match card ---- */
+.matches-list { display: flex; flex-direction: column; gap: 8px; }
+.match-card {
+  background: var(--bg-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: border-color 0.15s;
+}
+.match-card:hover { border-color: var(--border-md); }
+.match-card--live {
+  border-color: rgba(230,48,48,0.3);
+  background: linear-gradient(135deg, var(--bg-3) 80%, rgba(230,48,48,0.05));
+}
+.match-card--ecuador { border-left: 3px solid var(--gold); }
+
+.match-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--text-3);
+}
+.match-meta-left { display: flex; align-items: center; gap: 8px; }
+
+.badge {
+  font-family: var(--font-sport);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+.badge--group   { background: var(--green-dim); color: var(--green-lt); }
+.badge--live    { background: var(--red-dim);   color: var(--red); display: flex; align-items: center; gap: 4px; }
+.badge--ft      { background: var(--bg-4);      color: var(--text-3); }
+.badge-live-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--red); animation: pulse 1s infinite; }
+
+.match-teams {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.team-block {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+}
+.team-block--right {
+  flex-direction: row-reverse;
+  text-align: right;
+}
+.team-flag  { font-size: 24px; flex-shrink: 0; }
+.team-name  {
+  font-family: var(--font-sport);
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text-1);
+  letter-spacing: 0.02em;
+}
+.team-name--winner { color: var(--gold); }
+
+.score-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-width: 70px;
+}
+.score-main {
+  font-family: var(--font-sport);
+  font-size: 34px;
+  font-weight: 800;
+  color: var(--text-1);
+  letter-spacing: 0.08em;
+  line-height: 1;
+}
+.score-main--upcoming {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text-3);
+  letter-spacing: 0.04em;
+}
+.score-time {
+  font-size: 11px;
+  color: var(--red);
+  font-weight: 600;
+}
+
+/* ---- Standings ---- */
+.standings-wrap {
+  background: var(--bg-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+.standings-group-title {
+  font-family: var(--font-sport);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--gold);
+  letter-spacing: 0.05em;
+  padding: 12px 16px 8px;
+  border-bottom: 1px solid var(--border);
+}
+table.standings {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+table.standings th {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  padding: 8px 10px;
+  text-align: center;
+  border-bottom: 1px solid var(--border);
+}
+table.standings th:first-child { text-align: left; width: 40%; }
+table.standings td {
+  padding: 9px 10px;
+  text-align: center;
+  color: var(--text-2);
+}
+table.standings td:first-child { text-align: left; }
+table.standings tr:not(:last-child) td { border-bottom: 1px solid var(--border); }
+table.standings tr:hover td { background: var(--bg-4); }
+
+.team-td { display: flex; align-items: center; gap: 8px; }
+.pos-badge {
+  width: 20px;
+  font-size: 11px;
+  color: var(--text-3);
+  flex-shrink: 0;
+  text-align: right;
+}
+.pts-td { font-weight: 600; color: var(--text-1); font-size: 13px; }
+.qualified-row td:first-child { border-left: 3px solid #22c55e; }
+.playoff-row    td:first-child { border-left: 3px solid var(--gold); }
+.standings-legend {
+  display: flex;
+  gap: 16px;
+  padding: 10px 16px;
+  border-top: 1px solid var(--border);
+  font-size: 10px;
+  color: var(--text-3);
+}
+.legend-item { display: flex; align-items: center; gap: 5px; }
+.legend-dot { width: 3px; height: 14px; border-radius: 2px; }
+
+/* ---- Group tabs ---- */
+.group-tabs {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+.group-tab {
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-3);
+  background: var(--bg-3);
+  border: 1px solid var(--border);
+  transition: all 0.15s;
+}
+.group-tab:hover  { color: var(--text-1); border-color: var(--border-md); }
+.group-tab.active { background: var(--green-dim); color: var(--green-lt); border-color: transparent; }
+
+/* ---- Bracket widget ---- */
+.bracket-match {
+  background: var(--bg-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+.bracket-team {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 10px;
+  font-size: 12px;
+  color: var(--text-2);
+}
+.bracket-team:not(:last-child) { border-bottom: 1px solid var(--border); }
+.bracket-team--winner { color: var(--text-1); font-weight: 500; }
+.bracket-team-name { display: flex; align-items: center; gap: 6px; }
+.bracket-score { font-family: var(--font-sport); font-size: 14px; font-weight: 700; color: var(--text-1); }
+.bracket-round { font-size: 10px; color: var(--text-3); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.07em; }
+.bracket-vs { text-align: center; font-size: 10px; color: var(--text-3); padding: 4px 0; }
+
+/* ---- News feed ---- */
+.news-item {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.news-item:hover { opacity: 0.8; }
+.news-item:last-child { border-bottom: none; }
+.news-source {
+  font-size: 10px;
+  color: var(--text-3);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.news-title {
+  font-size: 12px;
+  color: var(--text-1);
+  line-height: 1.45;
+  font-weight: 400;
+}
+.news-time { font-size: 10px; color: var(--text-3); margin-top: 3px; }
+
+/* ---- Quick standings (sidebar) ---- */
+.quick-standings { font-size: 12px; }
+.quick-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 4px;
+  border-bottom: 1px solid var(--border);
+}
+.quick-row:last-child { border-bottom: none; }
+.quick-team { display: flex; align-items: center; gap: 6px; color: var(--text-2); }
+.quick-pts  { font-weight: 600; color: var(--text-1); font-family: var(--font-sport); font-size: 14px; }
+
+/* ---- Loading & empty states ---- */
+.loading-state {
+  color: var(--text-3);
+  font-size: 13px;
+  padding: 20px 0;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.loading-state.small { padding: 12px 0; font-size: 12px; }
+.empty-state {
+  color: var(--text-3);
+  font-size: 13px;
+  padding: 16px 0;
+  text-align: center;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.spin { animation: spin 1s linear infinite; display: inline-block; }
+
+/* ---- Scrollbar ---- */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--bg-4); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--border-md); }
+
+/* ---- Responsive ---- */
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar--left, .sidebar--right { display: none; }
+  .hero-stats { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
+</head>
+<body>
+<div class="ticker-bar" id="tickerBar">
+  <span class="ticker-label">EN VIVO</span>
+  <div class="ticker-track">
+    <div class="ticker-inner" id="tickerInner"></div>
+  </div>
+</div>
+<header class="topnav">
+  <div class="logo">
+    <div class="logo-icon"><i class="ti ti-ball-football"></i></div>
+    <span class="logo-text">EcuaDeportes</span>
+  </div>
+  <nav class="main-nav">
+    <button class="nav-btn active" data-section="mundial">Mundial 2026</button>
+    <button class="nav-btn" data-section="ligapro">LigaPro</button>
+    <button class="nav-btn" data-section="sudamericana">Sudamericana</button>
+    <button class="nav-btn" data-section="noticias">Noticias</button>
+  </nav>
+  <div class="nav-right">
+    <div class="sync-indicator" id="syncIndicator">
+      <div class="sync-dot"></div>
+      <span id="syncLabel">Cargando...</span>
+    </div>
+  </div>
+</header>
+<div class="layout">
+  <aside class="sidebar sidebar--left">
+    <div class="sidebar-section">
+      <div class="sidebar-label">Secciones</div>
+      <button class="sidebar-btn active" data-view="partidos"><i class="ti ti-calendar-event"></i> Partidos</button>
+      <button class="sidebar-btn" data-view="posiciones"><i class="ti ti-table"></i> Posiciones</button>
+      <button class="sidebar-btn" data-view="llaves"><i class="ti ti-tournament"></i> Llaves</button>
+      <button class="sidebar-btn" data-view="estadisticas"><i class="ti ti-chart-bar"></i> Estadísticas</button>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Grupos</div>
+      <div id="groupList"></div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Seguidos</div>
+      <button class="sidebar-btn team-btn"><span class="flag">🇪🇨</span> Ecuador</button>
+      <button class="sidebar-btn team-btn"><span class="flag">🇦🇷</span> Argentina</button>
+      <button class="sidebar-btn team-btn"><span class="flag">🇧🇷</span> Brasil</button>
+    </div>
+  </aside>
+  <main class="content" id="mainContent">
+    <div class="hero-stats" id="heroStats">
+      <div class="stat-card stat-card--live">
+        <div class="stat-label">En vivo</div>
+        <div class="stat-value" id="statLive">—</div>
+        <div class="stat-sub">partidos ahora</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Hoy</div>
+        <div class="stat-value" id="statToday">—</div>
+        <div class="stat-sub">partidos</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Equipos</div>
+        <div class="stat-value">48</div>
+        <div class="stat-sub">clasificados</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Fase</div>
+        <div class="stat-value stat-value--sm">Grupos</div>
+        <div class="stat-sub">Jornada 2</div>
+      </div>
+    </div>
+    <section class="content-section" id="sectionLive">
+      <div class="section-header">
+        <h2 class="section-title"><span class="live-dot-inline"></span> En vivo</h2>
+        <button class="link-btn" onclick="setView('partidos')">Ver todos →</button>
+      </div>
+      <div class="matches-list" id="liveMatches"><div class="loading-state"><i class="ti ti-loader-2 spin"></i> Cargando...</div></div>
+    </section>
+    <section class="content-section" id="sectionUpcoming">
+      <div class="section-header">
+        <h2 class="section-title">Próximos partidos</h2>
+        <button class="link-btn">Ver calendario →</button>
+      </div>
+      <div class="matches-list" id="upcomingMatches"><div class="loading-state"><i class="ti ti-loader-2 spin"></i> Cargando...</div></div>
+    </section>
+    <section class="content-section" id="sectionRecent">
+      <div class="section-header">
+        <h2 class="section-title">Resultados recientes</h2>
+        <button class="link-btn">Ver todos →</button>
+      </div>
+      <div class="matches-list" id="recentMatches"><div class="loading-state"><i class="ti ti-loader-2 spin"></i> Cargando...</div></div>
+    </section>
+    <section class="content-section hidden" id="sectionStandings">
+      <div class="section-header">
+        <h2 class="section-title">Tabla de posiciones</h2>
+        <div class="group-tabs" id="groupTabs"></div>
+      </div>
+      <div id="standingsTable"><div class="loading-state"><i class="ti ti-loader-2 spin"></i> Cargando...</div></div>
+    </section>
+  </main>
+  <aside class="sidebar sidebar--right">
+    <div class="sidebar-section">
+      <div class="sidebar-label">Últimas noticias</div>
+      <div id="newsFeed"><div class="loading-state small"><i class="ti ti-loader-2 spin"></i></div></div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Llaves — octavos</div>
+      <div class="bracket-widget" id="bracketWidget"><div class="loading-state small"><i class="ti ti-loader-2 spin"></i></div></div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Tabla rápida — Grupo A</div>
+      <div id="quickStandings"><div class="loading-state small"><i class="ti ti-loader-2 spin"></i></div></div>
+    </div>
+  </aside>
+</div>
+<script>
+/* ===========================
+   data.js — ESPN API layer
+   =========================== */
+
+const API = {
+  // ESPN endpoints (no API key needed)
+  BASE: 'https://site.api.espn.com/apis/site/v2/sports/soccer',
+  WC:   'fifa.world',   // Liga slug del Mundial
+
+  async fetchScoreboard() {
+    const url = `${this.BASE}/${this.WC}/scoreboard`;
+    try {
+      const res = await fetch(url);
+      if (!res.ok) throw new Error('ESPN scoreboard error');
+      return await res.json();
+    } catch (e) {
+      console.warn('[API] scoreboard error:', e);
+      return null;
+    }
+  },
+
+  async fetchStandings() {
+    const url = `${this.BASE}/${this.WC}/standings`;
+    try {
+      const res = await fetch(url);
+      if (!res.ok) throw new Error('ESPN standings error');
+      return await res.json();
+    } catch (e) {
+      console.warn('[API] standings error:', e);
+      return null;
+    }
+  },
+
+  async fetchNews() {
+    const url = `${this.BASE}/${this.WC}/news?limit=8`;
+    try {
+      const res = await fetch(url);
+      if (!res.ok) throw new Error('ESPN news error');
+      return await res.json();
+    } catch (e) {
+      console.warn('[API] news error:', e);
+      return null;
+    }
+  }
+};
+
+/* ---- Parser helpers ---- */
+const Parse = {
+
+  /** Extrae partidos del scoreboard ESPN */
+  matches(data) {
+    if (!data?.events) return [];
+    return data.events.map(ev => {
+      const comp   = ev.competitions?.[0];
+      const home   = comp?.competitors?.find(c => c.homeAway === 'home');
+      const away   = comp?.competitors?.find(c => c.homeAway === 'away');
+      const status = ev.status?.type;
+      const detail = ev.status?.displayClock || '';
+      const period = ev.status?.period || 0;
+
+      return {
+        id:        ev.id,
+        name:      ev.name,
+        date:      new Date(ev.date),
+        status:    status?.name || 'pre',          // 'pre' | 'in' | 'post'
+        statusShort: status?.shortDetail || '',
+        clock:     detail,
+        period,
+        venue:     comp?.venue?.fullName || '',
+        city:      comp?.venue?.address?.city || '',
+        group:     ev.season?.slug || '',
+        home: {
+          id:    home?.id,
+          name:  home?.team?.shortDisplayName || home?.team?.displayName || '',
+          logo:  home?.team?.logo || '',
+          flag:  Parse.countryFlag(home?.team?.displayName),
+          score: home?.score ?? null,
+          winner: home?.winner || false,
+        },
+        away: {
+          id:    away?.id,
+          name:  away?.team?.shortDisplayName || away?.team?.displayName || '',
+          logo:  away?.team?.logo || '',
+          flag:  Parse.countryFlag(away?.team?.displayName),
+          score: away?.score ?? null,
+          winner: away?.winner || false,
+        },
+      };
+    });
+  },
+
+  /** Extrae grupos y posiciones del standings ESPN */
+  standings(data) {
+    if (!data?.standings) return [];
+    const groups = data.standings.map(g => ({
+      name:  g.name || g.displayName || 'Grupo',
+      teams: (g.entries || []).map((e, idx) => ({
+        pos:  idx + 1,
+        name: e.team?.shortDisplayName || e.team?.displayName || '',
+        flag: Parse.countryFlag(e.team?.displayName),
+        pj:   Parse.stat(e, 'GP'),
+        g:    Parse.stat(e, 'W'),
+        em:   Parse.stat(e, 'T'),
+        p:    Parse.stat(e, 'L'),
+        gf:   Parse.stat(e, 'GF'),
+        gc:   Parse.stat(e, 'GA'),
+        gd:   Parse.stat(e, 'GD'),
+        pts:  Parse.stat(e, 'PTS'),
+      }))
+    }));
+    return groups;
+  },
+
+  stat(entry, abbr) {
+    const s = entry.stats?.find(x => x.abbreviation === abbr || x.name === abbr);
+    return parseInt(s?.value ?? 0);
+  },
+
+  news(data) {
+    if (!data?.articles) return [];
+    return data.articles.slice(0, 8).map(a => ({
+      id:      a.id,
+      title:   a.headline || a.title || '',
+      source:  a.source || 'ESPN',
+      link:    a.links?.web?.href || '#',
+      time:    a.published ? Parse.timeAgo(new Date(a.published)) : '',
+    }));
+  },
+
+  timeAgo(date) {
+    const diff = (Date.now() - date) / 1000;
+    if (diff < 60)   return 'Ahora';
+    if (diff < 3600) return `Hace ${Math.floor(diff/60)} min`;
+    if (diff < 86400)return `Hace ${Math.floor(diff/3600)}h`;
+    return `Hace ${Math.floor(diff/86400)}d`;
+  },
+
+  /** Mapa de nombres → emoji de bandera */
+  countryFlag(name = '') {
+    const n = name.toLowerCase();
+    const map = {
+      'ecuador':        '🇪🇨',
+      'argentina':      '🇦🇷',
+      'brazil':         '🇧🇷',
+      'brasil':         '🇧🇷',
+      'france':         '🇫🇷',
+      'germany':        '🇩🇪',
+      'spain':          '🇪🇸',
+      'england':        '🏴󠁧󠁢󠁥󠁮󠁧󠁿',
+      'portugal':       '🇵🇹',
+      'netherlands':    '🇳🇱',
+      'belgium':        '🇧🇪',
+      'croatia':        '🇭🇷',
+      'morocco':        '🇲🇦',
+      'japan':          '🇯🇵',
+      'south korea':    '🇰🇷',
+      'usa':            '🇺🇸',
+      'united states':  '🇺🇸',
+      'canada':         '🇨🇦',
+      'mexico':         '🇲🇽',
+      'colombia':       '🇨🇴',
+      'uruguay':        '🇺🇾',
+      'chile':          '🇨🇱',
+      'peru':           '🇵🇪',
+      'paraguay':       '🇵🇾',
+      'venezuela':      '🇻🇪',
+      'bolivia':        '🇧🇴',
+      'senegal':        '🇸🇳',
+      'nigeria':        '🇳🇬',
+      'cameroon':       '🇨🇲',
+      'ghana':          '🇬🇭',
+      'ivory coast':    '🇨🇮',
+      'saudi arabia':   '🇸🇦',
+      'iran':           '🇮🇷',
+      'australia':      '🇦🇺',
+      'poland':         '🇵🇱',
+      'sweden':         '🇸🇪',
+      'denmark':        '🇩🇰',
+      'switzerland':    '🇨🇭',
+      'austria':        '🇦🇹',
+      'serbia':         '🇷🇸',
+      'turkey':         '🇹🇷',
+      'czechia':        '🇨🇿',
+      'ukraine':        '🇺🇦',
+      'hungary':        '🇭🇺',
+      'scotland':       '🏴󠁧󠁢󠁳󠁣󠁴󠁿',
+      'wales':          '🏴󠁧󠁢󠁷󠁬󠁳󠁿',
+      'slovakia':       '🇸🇰',
+      'albania':        '🇦🇱',
+      'slovenia':       '🇸🇮',
+      'georgia':        '🇬🇪',
+      'romania':        '🇷🇴',
+    };
+    for (const [k, v] of Object.entries(map)) {
+      if (n.includes(k)) return v;
+    }
+    return '🏳️';
+  }
+};
+
+/* ---- Datos de demo (fallback cuando la API no devuelve datos del Mundial) ---- */
+const DEMO = {
+  matches: [
+    // En vivo
+    {
+      id: 'l1', status: 'in', clock: "67'", statusShort: "67'",
+      date: new Date(), group: 'Grupo B',
+      venue: 'MetLife Stadium', city: 'Nueva York',
+      home: { name: 'Argentina', flag: '🇦🇷', score: 2, winner: false },
+      away: { name: 'México',    flag: '🇲🇽', score: 1, winner: false },
+    },
+    {
+      id: 'l2', status: 'in', clock: "43'", statusShort: "43'",
+      date: new Date(), group: 'Grupo D',
+      venue: 'Estadio Azteca', city: 'Ciudad de México',
+      home: { name: 'Brasil',   flag: '🇧🇷', score: 3, winner: false },
+      away: { name: 'Camerún',  flag: '🇨🇲', score: 0, winner: false },
+    },
+    // Próximos
+    {
+      id: 'u1', status: 'pre', clock: '', statusShort: 'Hoy · 18:00',
+      date: new Date(Date.now() + 3 * 3600000), group: 'Grupo C',
+      venue: 'SoFi Stadium', city: 'Los Ángeles',
+      home: { name: 'Ecuador', flag: '🇪🇨', score: null },
+      away: { name: 'Senegal', flag: '🇸🇳', score: null },
+    },
+    {
+      id: 'u2', status: 'pre', clock: '', statusShort: 'Hoy · 21:00',
+      date: new Date(Date.now() + 6 * 3600000), group: 'Grupo A',
+      venue: 'AT&T Stadium', city: 'Dallas',
+      home: { name: 'Estados Unidos', flag: '🇺🇸', score: null },
+      away: { name: 'Canadá',         flag: '🇨🇦', score: null },
+    },
+    {
+      id: 'u3', status: 'pre', clock: '', statusShort: 'Mañana · 15:00',
+      date: new Date(Date.now() + 22 * 3600000), group: 'Grupo F',
+      venue: 'NRG Stadium', city: 'Houston',
+      home: { name: 'España',   flag: '🇪🇸', score: null },
+      away: { name: 'Japón',    flag: '🇯🇵', score: null },
+    },
+    // Recientes
+    {
+      id: 'r1', status: 'post', clock: '', statusShort: 'FT',
+      date: new Date(Date.now() - 5 * 3600000), group: 'Grupo E',
+      venue: 'Lumen Field', city: 'Seattle',
+      home: { name: 'Francia',  flag: '🇫🇷', score: 3, winner: true },
+      away: { name: 'Marruecos',flag: '🇲🇦', score: 1, winner: false },
+    },
+    {
+      id: 'r2', status: 'post', clock: '', statusShort: 'FT',
+      date: new Date(Date.now() - 8 * 3600000), group: 'Grupo G',
+      venue: 'Arrowhead Stadium', city: 'Kansas City',
+      home: { name: 'Portugal',flag: '🇵🇹', score: 2, winner: true  },
+      away: { name: 'Uruguay', flag: '🇺🇾', score: 2, winner: false },
+    },
+    {
+      id: 'r3', status: 'post', clock: '', statusShort: 'FT',
+      date: new Date(Date.now() - 24 * 3600000), group: 'Grupo H',
+      venue: 'BC Place', city: 'Vancouver',
+      home: { name: 'Colombia', flag: '🇨🇴', score: 1, winner: false },
+      away: { name: 'Alemania', flag: '🇩🇪', score: 4, winner: true  },
+    },
+  ],
+
+  standings: [
+    {
+      name: 'Grupo A',
+      teams: [
+        { pos:1, name:'Estados Unidos', flag:'🇺🇸', pj:2, g:2, em:0, p:0, gd:'+4', pts:6 },
+        { pos:2, name:'Canadá',         flag:'🇨🇦', pj:2, g:1, em:0, p:1, gd:'+1', pts:3 },
+        { pos:3, name:'México',         flag:'🇲🇽', pj:2, g:0, em:1, p:1, gd:'-2', pts:1 },
+        { pos:4, name:'Cuba',           flag:'🇨🇺', pj:2, g:0, em:1, p:1, gd:'-3', pts:1 },
+      ]
+    },
+    {
+      name: 'Grupo B',
+      teams: [
+        { pos:1, name:'Argentina', flag:'🇦🇷', pj:2, g:2, em:0, p:0, gd:'+5', pts:6 },
+        { pos:2, name:'Polonia',   flag:'🇵🇱', pj:2, g:1, em:0, p:1, gd:'+1', pts:3 },
+        { pos:3, name:'México',    flag:'🇲🇽', pj:2, g:0, em:1, p:1, gd:'-3', pts:1 },
+        { pos:4, name:'Arabia S.', flag:'🇸🇦', pj:2, g:0, em:1, p:1, gd:'-3', pts:1 },
+      ]
+    },
+    {
+      name: 'Grupo C',
+      teams: [
+        { pos:1, name:'Francia',  flag:'🇫🇷', pj:2, g:2, em:0, p:0, gd:'+6', pts:6 },
+        { pos:2, name:'Ecuador',  flag:'🇪🇨', pj:1, g:1, em:0, p:0, gd:'+2', pts:3 },
+        { pos:3, name:'Senegal',  flag:'🇸🇳', pj:2, g:0, em:1, p:1, gd:'-2', pts:1 },
+        { pos:4, name:'Jamaica',  flag:'🇯🇲', pj:2, g:0, em:0, p:2, gd:'-6', pts:0 },
+      ]
+    },
+    {
+      name: 'Grupo D',
+      teams: [
+        { pos:1, name:'Brasil',   flag:'🇧🇷', pj:2, g:2, em:0, p:0, gd:'+7', pts:6 },
+        { pos:2, name:'Holanda',  flag:'🇳🇱', pj:2, g:1, em:0, p:1, gd:'+2', pts:3 },
+        { pos:3, name:'Camerún',  flag:'🇨🇲', pj:2, g:0, em:1, p:1, gd:'-3', pts:1 },
+        { pos:4, name:'Vietnam',  flag:'🇻🇳', pj:2, g:0, em:0, p:2, gd:'-6', pts:0 },
+      ]
+    },
+  ],
+
+  news: [
+    { id:1, title:'Ecuador confirma once inicial para el duelo ante Senegal', source:'El Universo', time:'Hace 12 min', link:'#' },
+    { id:2, title:'Messi anota doblete y Argentina lidera el Grupo B con autoridad', source:'ESPN', time:'Hace 34 min', link:'#' },
+    { id:3, title:'Brasil golea 4-0 en debut y ya piensa en octavos de final', source:'Marca', time:'Hace 1h', link:'#' },
+    { id:4, title:'Francia aplasta 3-1 a Marruecos en partidazo del Grupo E', source:'AS', time:'Hace 2h', link:'#' },
+    { id:5, title:'Portugal y Uruguay empatan 2-2 en el Grupo G en duelo emocionante', source:'Infobae', time:'Hace 3h', link:'#' },
+    { id:6, title:'Alemania vence 4-1 a Colombia y lidera con solvencia el Grupo H', source:'Mundo Deportivo', time:'Hace 1d', link:'#' },
+  ],
+};
+/* ===========================
+   ui.js — Render helpers
+   =========================== */
+
+const UI = {
+
+  /* ---- Match card ---- */
+  matchCard(m) {
+    const isLive     = m.status === 'in';
+    const isFinished = m.status === 'post';
+    const isPre      = m.status === 'pre';
+    const isEcuador  = m.home.name.toLowerCase().includes('ecuador') ||
+                       m.away.name.toLowerCase().includes('ecuador');
+
+    let cardClass = 'match-card';
+    if (isLive)    cardClass += ' match-card--live';
+    if (isEcuador) cardClass += ' match-card--ecuador';
+
+    /* Badge izquierdo */
+    let badgeHtml = '';
+    if (isLive) {
+      badgeHtml = `<span class="badge badge--live"><span class="badge-live-dot"></span>EN VIVO · ${m.clock}</span>`;
+    } else if (isFinished) {
+      badgeHtml = `<span class="badge badge--ft">FT</span>`;
+    } else {
+      badgeHtml = `<span class="badge badge--group">${m.group || 'GRUPO'}</span>`;
+    }
+
+    /* Score */
+    let scoreHtml = '';
+    if (isPre) {
+      scoreHtml = `<div class="score-block">
+        <span class="score-main score-main--upcoming">vs</span>
+        <span class="score-time" style="color:var(--text-3)">${m.statusShort}</span>
+      </div>`;
+    } else {
+      const timeLabel = isLive
+        ? `<span class="score-time">${m.clock}</span>`
+        : `<span class="score-time" style="color:var(--text-3)">Finalizado</span>`;
+      scoreHtml = `<div class="score-block">
+        <span class="score-main">${m.home.score} – ${m.away.score}</span>
+        ${isLive ? timeLabel : ''}
+      </div>`;
+    }
+
+    const homeWinner = isFinished && m.home.winner;
+    const awayWinner = isFinished && m.away.winner;
+
+    return `
+      <div class="${cardClass}">
+        <div class="match-meta">
+          <div class="match-meta-left">
+            ${badgeHtml}
+            <span>${m.group ? m.group + ' · ' : ''}${m.venue}</span>
+          </div>
+          <span>${m.city}</span>
+        </div>
+        <div class="match-teams">
+          <div class="team-block">
+            <span class="team-flag">${m.home.flag}</span>
+            <span class="team-name ${homeWinner ? 'team-name--winner' : ''}">${m.home.name}</span>
+          </div>
+          ${scoreHtml}
+          <div class="team-block team-block--right">
+            <span class="team-flag">${m.away.flag}</span>
+            <span class="team-name ${awayWinner ? 'team-name--winner' : ''}">${m.away.name}</span>
+          </div>
+        </div>
+      </div>`;
+  },
+
+  /* ---- Standings table ---- */
+  standingsTable(group) {
+    const rows = group.teams.map((t, i) => {
+      const rowClass = i === 0 || i === 1 ? 'qualified-row' :
+                       i === 2            ? 'playoff-row'    : '';
+      return `<tr class="${rowClass}">
+        <td>
+          <div class="team-td">
+            <span class="pos-badge">${t.pos}</span>
+            <span>${t.flag}</span>
+            <span>${t.name}</span>
+          </div>
+        </td>
+        <td>${t.pj}</td>
+        <td>${t.g}</td>
+        <td>${t.em}</td>
+        <td>${t.p}</td>
+        <td>${t.gd}</td>
+        <td class="pts-td">${t.pts}</td>
+      </tr>`;
+    }).join('');
+
+    return `
+      <div class="standings-wrap">
+        <div class="standings-group-title">${group.name}</div>
+        <table class="standings">
+          <thead>
+            <tr>
+              <th>Equipo</th><th>PJ</th><th>G</th><th>E</th><th>P</th><th>GD</th><th>Pts</th>
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
+        <div class="standings-legend">
+          <div class="legend-item"><div class="legend-dot" style="background:#22c55e"></div> Clasificados</div>
+          <div class="legend-item"><div class="legend-dot" style="background:var(--gold)"></div> Repesca</div>
+        </div>
+      </div>`;
+  },
+
+  /* ---- Quick standings (sidebar) ---- */
+  quickStandings(group) {
+    const rows = group.teams.map(t => `
+      <div class="quick-row">
+        <div class="quick-team">
+          <span>${t.pos}</span>
+          <span>${t.flag}</span>
+          <span>${t.name}</span>
+        </div>
+        <span class="quick-pts">${t.pts}</span>
+      </div>`).join('');
+    return `<div class="quick-standings">${rows}</div>`;
+  },
+
+  /* ---- News feed ---- */
+  newsFeed(articles) {
+    if (!articles.length) return '<div class="empty-state">Sin noticias disponibles</div>';
+    return articles.map(a => `
+      <div class="news-item" onclick="window.open('${a.link}','_blank')">
+        <div class="news-source"><i class="ti ti-news" style="font-size:11px"></i> ${a.source}</div>
+        <div class="news-title">${a.title}</div>
+        <div class="news-time">${a.time}</div>
+      </div>`).join('');
+  },
+
+  /* ---- Bracket widget ---- */
+  bracketWidget(matches) {
+    // Muestra partidos de eliminatorias (post o pre con dos equipos)
+    if (!matches.length) return '<div class="empty-state">Por definir</div>';
+    return matches.map(m => {
+      const isPost = m.status === 'post';
+      return `
+        <div style="margin-bottom:12px">
+          <div class="bracket-round">${m.group || 'Octavos'}</div>
+          <div class="bracket-match">
+            <div class="bracket-team ${isPost && m.home.winner ? 'bracket-team--winner' : ''}">
+              <div class="bracket-team-name"><span>${m.home.flag}</span><span>${m.home.name}</span></div>
+              <span class="bracket-score">${m.home.score !== null ? m.home.score : '—'}</span>
+            </div>
+            <div class="bracket-team ${isPost && m.away.winner ? 'bracket-team--winner' : ''}">
+              <div class="bracket-team-name"><span>${m.away.flag}</span><span>${m.away.name}</span></div>
+              <span class="bracket-score">${m.away.score !== null ? m.away.score : '—'}</span>
+            </div>
+          </div>
+        </div>`;
+    }).join('');
+  },
+
+  /* ---- Ticker items ---- */
+  tickerContent(liveMatches) {
+    if (!liveMatches.length) return '<span class="ticker-item">No hay partidos en vivo</span>';
+    const items = liveMatches.map(m =>
+      `<span class="ticker-item">
+        ${m.home.flag} ${m.home.name}
+        <span class="ticker-score">${m.home.score} – ${m.away.score}</span>
+        ${m.away.name} ${m.away.flag}
+        <span style="opacity:0.6;font-size:11px;margin-left:4px">${m.clock}</span>
+      </span>`
+    ).join('');
+    // Duplicar para scroll infinito
+    return items + items;
+  },
+
+  /* ---- Group sidebar list ---- */
+  groupList() {
+    const letters = 'ABCDEFGHIJKL'.split('');
+    return letters.slice(0, 12).map(l =>
+      `<button class="sidebar-btn" data-group="${l}">
+         <i class="ti ti-circle-letter-${l.toLowerCase()}"></i> Grupo ${l}
+       </button>`
+    ).join('');
+  },
+
+  /* ---- Group tabs ---- */
+  groupTabs(groups, activeIdx = 0) {
+    return groups.map((g, i) =>
+      `<button class="group-tab ${i === activeIdx ? 'active' : ''}" data-gi="${i}">${g.name}</button>`
+    ).join('');
+  },
+
+  /* ---- Empty / Error states ---- */
+  empty(msg = 'Sin datos disponibles') {
+    return `<div class="empty-state">${msg}</div>`;
+  },
+
+  loading() {
+    return `<div class="loading-state"><i class="ti ti-loader-2 spin"></i> Cargando...</div>`;
+  }
+};
+/* ===========================
+   app.js — Controller principal
+   =========================== */
+
+const App = {
+  state: {
+    matches:   [],
+    standings: [],
+    news:      [],
+    activeView:   'partidos',
+    activeGroup:  0,
+    lastSync:     null,
+    loading:      false,
+  },
+
+  REFRESH_MS: 15 * 60 * 1000, // 15 minutos
+  refreshTimer: null,
+
+  /* ---- Init ---- */
+  async init() {
+    this.setupNav();
+    this.setupSidebar();
+    document.getElementById('groupList').innerHTML = UI.groupList();
+    this.bindGroupButtons();
+    await this.refresh();
+    this.scheduleRefresh();
+  },
+
+  /* ---- Data refresh ---- */
+  async refresh() {
+    if (this.state.loading) return;
+    this.state.loading = true;
+    this.setSyncStatus('loading', 'Actualizando...');
+
+    let matches   = null;
+    let standings = null;
+    let news      = null;
+
+    try {
+      [matches, standings, news] = await Promise.all([
+        API.fetchScoreboard(),
+        API.fetchStandings(),
+        API.fetchNews(),
+      ]);
+    } catch(e) {
+      console.warn('[App] fetch error', e);
+    }
+
+    // Parsear datos reales o caer en demo
+    this.state.matches   = matches   ? Parse.matches(matches)     : DEMO.matches;
+    this.state.standings = standings ? Parse.standings(standings) : DEMO.standings;
+    this.state.news      = news      ? Parse.news(news)           : DEMO.news;
+    this.state.lastSync  = new Date();
+    this.state.loading   = false;
+
+    this.render();
+    this.setSyncStatus('ok', `Hace 0 min`);
+    this.startSyncTimer();
+  },
+
+  scheduleRefresh() {
+    if (this.refreshTimer) clearInterval(this.refreshTimer);
+    this.refreshTimer = setInterval(() => this.refresh(), this.REFRESH_MS);
+  },
+
+  startSyncTimer() {
+    if (this._syncTimer) clearInterval(this._syncTimer);
+    this._syncTimer = setInterval(() => {
+      if (!this.state.lastSync) return;
+      const diff = Math.floor((Date.now() - this.state.lastSync) / 60000);
+      const label = diff < 1 ? 'Ahora' : `Hace ${diff} min`;
+      document.getElementById('syncLabel').textContent = label;
+    }, 30000);
+  },
+
+  setSyncStatus(type, label) {
+    const dot  = document.querySelector('.sync-dot');
+    const lbl  = document.getElementById('syncLabel');
+    dot.className = 'sync-dot' + (type === 'loading' ? ' loading' : type === 'error' ? ' error' : '');
+    lbl.textContent = label;
+  },
+
+  /* ---- Render all ---- */
+  render() {
+    const { matches, standings, news } = this.state;
+
+    // Clasificar partidos
+    const live     = matches.filter(m => m.status === 'in');
+    const upcoming = matches.filter(m => m.status === 'pre');
+    const recent   = matches.filter(m => m.status === 'post');
+
+    // Hero stats
+    document.getElementById('statLive').textContent  = live.length;
+    document.getElementById('statToday').textContent = live.length + upcoming.filter(m => {
+      const h = m.date.getHours();
+      const today = new Date();
+      return m.date.toDateString() === today.toDateString();
+    }).length;
+
+    // Ticker
+    document.getElementById('tickerInner').innerHTML = UI.tickerContent(live);
+
+    // Secciones de partidos
+    this.renderMatchList('liveMatches',     live,     'No hay partidos en vivo');
+    this.renderMatchList('upcomingMatches', upcoming, 'No hay próximos partidos');
+    this.renderMatchList('recentMatches',   recent,   'Sin resultados recientes');
+
+    // Noticias
+    document.getElementById('newsFeed').innerHTML = UI.newsFeed(news);
+
+    // Bracket
+    const bracketMatches = recent.slice(0, 2);
+    document.getElementById('bracketWidget').innerHTML = UI.bracketWidget(bracketMatches);
+
+    // Tabla rápida grupo A
+    if (standings.length > 0) {
+      document.getElementById('quickStandings').innerHTML = UI.quickStandings(standings[0]);
+    }
+
+    // Posiciones completas
+    if (standings.length > 0) {
+      this.renderStandings(this.state.activeGroup);
+      document.getElementById('groupTabs').innerHTML = UI.groupTabs(standings, this.state.activeGroup);
+      this.bindGroupTabs();
+    }
+  },
+
+  renderMatchList(elId, matches, emptyMsg) {
+    const el = document.getElementById(elId);
+    if (!el) return;
+    if (!matches.length) {
+      el.innerHTML = `<div class="empty-state">${emptyMsg}</div>`;
+    } else {
+      el.innerHTML = matches.map(m => UI.matchCard(m)).join('');
+    }
+  },
+
+  renderStandings(groupIdx) {
+    const { standings } = this.state;
+    if (!standings.length) return;
+    const g = standings[groupIdx] || standings[0];
+    document.getElementById('standingsTable').innerHTML = UI.standingsTable(g);
+  },
+
+  /* ---- Navigation ---- */
+  setupNav() {
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const section = btn.dataset.section;
+        if (section === 'mundial') this.showView('partidos');
+      });
+    });
+  },
+
+  setupSidebar() {
+    document.querySelectorAll('[data-view]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('[data-view]').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        this.showView(btn.dataset.view);
+      });
+    });
+  },
+
+  showView(view) {
+    this.state.activeView = view;
+    const sections = {
+      'partidos': ['sectionLive', 'sectionUpcoming', 'sectionRecent'],
+      'posiciones': ['sectionStandings'],
+      'llaves': [],
+      'estadisticas': [],
+    };
+
+    const allSections = ['sectionLive','sectionUpcoming','sectionRecent','sectionStandings'];
+    allSections.forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const show = (sections[view] || []).includes(id);
+      el.classList.toggle('hidden', !show);
+    });
+  },
+
+  bindGroupButtons() {
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-group]');
+      if (!btn) return;
+      const letter = btn.dataset.group;
+      const idx    = 'ABCDEFGHIJKL'.indexOf(letter);
+      if (idx >= 0 && this.state.standings[idx]) {
+        this.state.activeGroup = idx;
+        document.getElementById('quickStandings').innerHTML = UI.quickStandings(this.state.standings[idx]);
+      }
+    });
+  },
+
+  bindGroupTabs() {
+    document.querySelectorAll('.group-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.group-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        const gi = parseInt(tab.dataset.gi);
+        this.state.activeGroup = gi;
+        this.renderStandings(gi);
+      });
+    });
+  },
+};
+
+/* ---- Exposed for inline handlers ---- */
+function setView(v) { App.showView(v); }
+
+/* ---- Boot ---- */
+document.addEventListener('DOMContentLoaded', () => App.init());
+</script>
+</body></html>
