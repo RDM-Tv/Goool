@@ -283,6 +283,8 @@ a { color: inherit; text-decoration: none; }
   border-radius: var(--radius-md);
   padding: 14px 16px;
 }
+.stat-card--clickable { cursor: pointer; transition: border-color 0.15s, transform 0.1s; }
+.stat-card--clickable:hover { border-color: var(--border-md); transform: translateY(-1px); }
 .stat-card--live { border-color: var(--red-dim); background: var(--red-dim); }
 .stat-label {
   font-size: 11px;
@@ -442,6 +444,107 @@ a { color: inherit; text-decoration: none; }
 }
 
 /* ---- Standings ---- */
+/* ---- Team stats ---- */
+.team-search-input {
+  background: var(--bg-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 7px 12px;
+  font-size: 13px;
+  color: var(--text-1);
+  width: 200px;
+  outline: none;
+}
+.team-search-input:focus { border-color: var(--accent-orange); }
+.team-search-input::placeholder { color: var(--text-3); }
+
+.team-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+}
+.team-stat-card {
+  background: var(--bg-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.team-stat-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.team-stat-name {
+  font-family: var(--font-sport);
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--text-1);
+}
+.team-stat-row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+  text-align: center;
+}
+.team-stat-box {
+  background: var(--bg-4);
+  border-radius: var(--radius-sm);
+  padding: 8px 4px;
+}
+.team-stat-box-value {
+  font-family: var(--font-sport);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-1);
+}
+.team-stat-box-label {
+  font-size: 9px;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 2px;
+}
+.team-stat-winpct {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--text-3);
+}
+.team-stat-winpct-bar {
+  flex: 1;
+  height: 5px;
+  background: var(--bg-4);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.team-stat-winpct-fill {
+  height: 100%;
+  background: var(--green-lt);
+}
+.team-stat-scorers {
+  border-top: 1px solid var(--border);
+  padding-top: 10px;
+}
+.team-stat-scorers-label {
+  font-size: 10px;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 6px;
+}
+.team-scorer-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--text-2);
+  padding: 3px 0;
+}
+.team-scorer-goals { color: var(--accent-orange); font-weight: 600; }
+
 .standings-wrap {
   background: var(--bg-3);
   border: 1px solid var(--border);
@@ -623,7 +726,7 @@ table.standings tr:hover td { background: var(--bg-4); }
 </head>
 <body>
 <div class="ticker-bar" id="tickerBar">
-  <span class="ticker-label">EN VIVO</span>
+  <span class="ticker-label" id="tickerLabel">EN VIVO</span>
   <div class="ticker-track">
     <div class="ticker-inner" id="tickerInner"></div>
   </div>
@@ -668,12 +771,12 @@ table.standings tr:hover td { background: var(--bg-4); }
   </aside>
   <main class="content">
     <div class="hero-stats">
-      <div class="stat-card stat-card--live">
+      <div class="stat-card stat-card--live stat-card--clickable" onclick="App.navigateFromStat('partidos','live')">
         <div class="stat-label">En vivo</div>
         <div class="stat-value" id="statLive">—</div>
         <div class="stat-sub">partidos ahora</div>
       </div>
-      <div class="stat-card">
+      <div class="stat-card stat-card--clickable" onclick="App.navigateFromStat('partidos','today')">
         <div class="stat-label">Hoy</div>
         <div class="stat-value" id="statToday">—</div>
         <div class="stat-sub">partidos</div>
@@ -683,7 +786,7 @@ table.standings tr:hover td { background: var(--bg-4); }
         <div class="stat-value">48</div>
         <div class="stat-sub">clasificados</div>
       </div>
-      <div class="stat-card">
+      <div class="stat-card stat-card--clickable" onclick="App.navigateFromStat('llaves')">
         <div class="stat-label">Fase</div>
         <div class="stat-value stat-value--sm" id="statFase">Grupos</div>
         <div class="stat-sub" id="statJornada">Cargando...</div>
@@ -722,12 +825,10 @@ table.standings tr:hover td { background: var(--bg-4); }
     </section>
     <section class="content-section hidden" id="sectionStats">
       <div class="section-header">
-        <h2 class="section-title">Estadísticas</h2>
+        <h2 class="section-title">Estadísticas por equipo</h2>
+        <input type="text" id="teamSearch" placeholder="Buscar equipo..." class="team-search-input"/>
       </div>
-      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 0;gap:12px;text-align:center">
-        <i class="ti ti-chart-bar" style="font-size:36px;color:var(--text-3)"></i>
-        <p style="color:var(--text-3);font-size:13px;max-width:320px">Estadísticas detalladas (goleadores, posesión, tarjetas) próximamente.</p>
-      </div>
+      <div id="teamStatsGrid"><div class="loading-state"><i class="ti ti-loader-2 spin"></i> Cargando...</div></div>
     </section>
   </main>
   <aside class="sidebar sidebar--right">
@@ -1049,6 +1150,40 @@ const UI = {
   },
 
   /* ---- Bracket widget ---- */
+  /* ---- Tarjeta de estadísticas de un equipo ---- */
+  teamStatCard(t) {
+    const scorersHtml = t.topScorers?.length > 0
+      ? t.topScorers.map(s => `
+          <div class="team-scorer-row">
+            <span>${s.name}</span>
+            <span class="team-scorer-goals">${s.goals} ${s.goals === 1 ? 'gol' : 'goles'}</span>
+          </div>`).join('')
+      : '<div class="team-scorer-row" style="color:var(--text-3)">Sin goles registrados</div>';
+
+    return `
+      <div class="team-stat-card">
+        <div class="team-stat-header">
+          ${this.flagImg(t.flag, t.name)}
+          <span class="team-stat-name">${t.name}</span>
+        </div>
+        <div class="team-stat-row">
+          <div class="team-stat-box"><div class="team-stat-box-value">${t.pj}</div><div class="team-stat-box-label">PJ</div></div>
+          <div class="team-stat-box"><div class="team-stat-box-value">${t.g}</div><div class="team-stat-box-label">Ganados</div></div>
+          <div class="team-stat-box"><div class="team-stat-box-value">${t.em}</div><div class="team-stat-box-label">Empates</div></div>
+          <div class="team-stat-box"><div class="team-stat-box-value">${t.p}</div><div class="team-stat-box-label">Perdidos</div></div>
+          <div class="team-stat-box"><div class="team-stat-box-value">${t.gf}/${t.gc}</div><div class="team-stat-box-label">GF/GC</div></div>
+        </div>
+        <div class="team-stat-winpct">
+          <span>${t.winPct}% victorias</span>
+          <div class="team-stat-winpct-bar"><div class="team-stat-winpct-fill" style="width:${t.winPct}%"></div></div>
+        </div>
+        <div class="team-stat-scorers">
+          <div class="team-stat-scorers-label">Goleadores</div>
+          ${scorersHtml}
+        </div>
+      </div>`;
+  },
+
   bracketWidget(matches) {
     // Muestra partidos de eliminatorias (post o pre con dos equipos)
     if (!matches.length) return '<div class="empty-state">Por definir</div>';
@@ -1072,16 +1207,27 @@ const UI = {
   },
 
   /* ---- Ticker items ---- */
-  tickerContent(liveMatches) {
-    if (!liveMatches.length) return '<span class="ticker-item">No hay partidos en vivo</span>';
-    const items = liveMatches.map(m =>
-      `<span class="ticker-item">
+  tickerContent(liveMatches, recentMatches = []) {
+    // Si hay partidos en vivo, esos tienen prioridad en el ticker
+    const showLive = liveMatches.length > 0;
+    const matches = showLive ? liveMatches : recentMatches.slice(0, 12);
+
+    if (matches.length === 0) {
+      return '<span class="ticker-item">No hay partidos recientes</span>';
+    }
+
+    const items = matches.map(m => {
+      const scoreOrTime = showLive
+        ? `<span class="ticker-score">${m.home.score} – ${m.away.score}</span>
+           <span style="opacity:0.6;font-size:11px;margin-left:4px">${m.clock}</span>`
+        : `<span class="ticker-score">${m.home.score} – ${m.away.score}</span>
+           <span style="opacity:0.6;font-size:11px;margin-left:4px">FT</span>`;
+      return `<span class="ticker-item">
         ${this.flagImg(m.home.flag, m.home.name)} ${m.home.name}
-        <span class="ticker-score">${m.home.score} – ${m.away.score}</span>
+        ${scoreOrTime}
         ${m.away.name} ${this.flagImg(m.away.flag, m.away.name)}
-        <span style="opacity:0.6;font-size:11px;margin-left:4px">${m.clock}</span>
-      </span>`
-    ).join('');
+      </span>`;
+    }).join('');
     // Duplicar para scroll infinito
     return items + items;
   },
@@ -1121,6 +1267,7 @@ const App = {
     matches:   [],
     standings: [],
     news:      [],
+    teamStats: [],
     activeView:   'partidos',
     activeGroup:  0,
     lastSync:     null,
@@ -1134,10 +1281,20 @@ const App = {
   async init() {
     this.setupNav();
     this.setupSidebar();
+    this.setupTeamSearch();
     document.getElementById('groupList').innerHTML = UI.groupList();
     this.bindGroupButtons();
     await this.refresh();
     this.scheduleRefresh();
+  },
+
+  /* ---- Buscador de equipos en la sección Estadísticas ---- */
+  setupTeamSearch() {
+    const input = document.getElementById('teamSearch');
+    if (!input) return;
+    input.addEventListener('input', (e) => {
+      this.renderTeamStats(e.target.value);
+    });
   },
 
   /* ---- Data refresh ---- */
@@ -1157,10 +1314,12 @@ const App = {
     const parsedMatches   = backendData?.matches   ? Parse.matches(backendData.matches)     : [];
     const parsedStandings = backendData?.standings ? Parse.standings(backendData.standings) : [];
     const parsedNews      = backendData?.news      ? Parse.news(backendData.news)           : [];
+    const parsedTeamStats = Array.isArray(backendData?.teamStats) ? backendData.teamStats    : [];
 
     this.state.matches   = parsedMatches.length   > 0 ? parsedMatches   : DEMO.matches;
     this.state.standings = parsedStandings.length > 0 ? parsedStandings : DEMO.standings;
     this.state.news      = parsedNews.length      > 0 ? parsedNews      : DEMO.news;
+    this.state.teamStats = parsedTeamStats;
     this.state.lastSync  = new Date();
     this.state.loading   = false;
 
@@ -1208,8 +1367,9 @@ const App = {
       return m.date.toDateString() === today.toDateString();
     }).length;
 
-    // Ticker
-    document.getElementById('tickerInner').innerHTML = UI.tickerContent(live);
+    // Ticker: prioriza partidos en vivo, si no hay muestra resultados recientes
+    document.getElementById('tickerInner').innerHTML = UI.tickerContent(live, recent);
+    document.getElementById('tickerLabel').textContent = live.length > 0 ? 'EN VIVO' : 'RESULTADOS';
 
     // Secciones de partidos
     this.renderMatchList('liveMatches',     live,     'No hay partidos en vivo');
@@ -1286,6 +1446,29 @@ const App = {
     document.getElementById('bracketFull').innerHTML = html;
   },
 
+  /* ---- Estadísticas por equipo: grilla con buscador ---- */
+  renderTeamStats(filterText = '') {
+    const { teamStats } = this.state;
+    const grid = document.getElementById('teamStatsGrid');
+    if (!grid) return;
+
+    if (!teamStats.length) {
+      grid.innerHTML = '<div class="empty-state">Estadísticas disponibles una vez que se jueguen partidos.</div>';
+      return;
+    }
+
+    const filtered = filterText
+      ? teamStats.filter(t => t.name.toLowerCase().includes(filterText.toLowerCase()))
+      : teamStats;
+
+    if (filtered.length === 0) {
+      grid.innerHTML = '<div class="empty-state">No se encontró ningún equipo con ese nombre.</div>';
+      return;
+    }
+
+    grid.innerHTML = `<div class="team-stats-grid">${filtered.map(t => UI.teamStatCard(t)).join('')}</div>`;
+  },
+
   /* ---- Navigation ---- */
   setupNav() {
     document.querySelectorAll('.nav-btn').forEach(btn => {
@@ -1351,6 +1534,24 @@ const App = {
     });
 
     if (view === 'llaves') this.renderFullBracket();
+    if (view === 'estadisticas') this.renderTeamStats();
+  },
+
+  /* ---- Navegación desde las tarjetas de stats del hero ---- */
+  navigateFromStat(view, scrollTarget = null) {
+    // Actualiza el sidebar para reflejar la sección activa
+    document.querySelectorAll('[data-view]').forEach(b => b.classList.remove('active'));
+    const sideBtn = document.querySelector(`[data-view="${view}"]`);
+    if (sideBtn) sideBtn.classList.add('active');
+
+    this.showView(view);
+
+    // Si es la sección "partidos", hace scroll al bloque específico (en vivo u hoy)
+    if (view === 'partidos' && scrollTarget) {
+      const idMap = { live: 'sectionLive', today: 'sectionUpcoming' };
+      const el = document.getElementById(idMap[scrollTarget]);
+      if (el) setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+    }
   },
 
   bindGroupButtons() {
