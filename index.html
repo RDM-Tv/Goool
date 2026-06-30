@@ -727,7 +727,11 @@ const API = {
 
   async fetchAll() {
     try {
-      const res = await fetch(`${this.BACKEND_URL}/api/all`);
+      // Timestamp en la URL + cache: 'no-store' evitan que el navegador
+      // sirva una respuesta vieja en vez de pedir datos frescos al backend.
+      const res = await fetch(`${this.BACKEND_URL}/api/all?t=${Date.now()}`, {
+        cache: 'no-store',
+      });
       if (!res.ok) throw new Error('Backend respondió ' + res.status);
       const data = await res.json();
       return data;
