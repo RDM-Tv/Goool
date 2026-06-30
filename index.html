@@ -8,7 +8,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.31.0/dist/tabler-icons.min.css"/>
 <style>
 /* ===========================
@@ -43,7 +43,7 @@
   --text-3:    #5a5a58;
 
   --font-ui:   'Inter', system-ui, sans-serif;
-  --font-sport:'Barlow Condensed', sans-serif;
+  --font-sport:'Inter', system-ui, sans-serif;
 
   --ticker-h:  36px;
   --nav-h:     68px;
@@ -165,10 +165,10 @@ a { color: inherit; text-decoration: none; }
 }
 .logo-text {
   font-family: var(--font-sport);
-  font-size: 28px;
+  font-size: 26px;
   font-weight: 800;
   color: var(--text-1);
-  letter-spacing: 0.02em;
+  letter-spacing: -0.02em;
 }
 .logo-o { color: var(--accent-blue); }
 .logo-o--ball { color: var(--accent-orange); }
@@ -291,10 +291,11 @@ a { color: inherit; text-decoration: none; }
 }
 .stat-value {
   font-family: var(--font-sport);
-  font-size: 32px;
-  font-weight: 700;
+  font-size: 30px;
+  font-weight: 800;
   color: var(--text-1);
   line-height: 1;
+  letter-spacing: -0.02em;
 }
 .stat-card--live .stat-value { color: var(--red); }
 .stat-value--sm { font-size: 18px; padding-top: 4px; }
@@ -313,7 +314,7 @@ a { color: inherit; text-decoration: none; }
   font-size: 16px;
   font-weight: 700;
   color: var(--text-1);
-  letter-spacing: 0.03em;
+  letter-spacing: -0.01em;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -390,13 +391,26 @@ a { color: inherit; text-decoration: none; }
   flex-direction: row-reverse;
   text-align: right;
 }
-.team-flag  { font-size: 24px; flex-shrink: 0; }
+.team-flag {
+  width: 28px; height: 20px;
+  object-fit: cover;
+  border-radius: 3px;
+  flex-shrink: 0;
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.08);
+}
+.team-flag--placeholder {
+  width: 28px; height: 20px;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 14px;
+  background: var(--bg-4);
+  border-radius: 3px;
+}
 .team-name  {
   font-family: var(--font-sport);
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 700;
   color: var(--text-1);
-  letter-spacing: 0.02em;
+  letter-spacing: -0.01em;
 }
 .team-name--winner { color: var(--gold); }
 
@@ -409,10 +423,10 @@ a { color: inherit; text-decoration: none; }
 }
 .score-main {
   font-family: var(--font-sport);
-  font-size: 34px;
+  font-size: 32px;
   font-weight: 800;
   color: var(--text-1);
-  letter-spacing: 0.08em;
+  letter-spacing: -0.01em;
   line-height: 1;
 }
 .score-main--upcoming {
@@ -439,7 +453,7 @@ a { color: inherit; text-decoration: none; }
   font-size: 14px;
   font-weight: 700;
   color: var(--gold);
-  letter-spacing: 0.05em;
+  letter-spacing: 0;
   padding: 12px 16px 8px;
   border-bottom: 1px solid var(--border);
 }
@@ -700,6 +714,21 @@ table.standings tr:hover td { background: var(--bg-4); }
       </div>
       <div id="standingsTable"><div class="loading-state"><i class="ti ti-loader-2 spin"></i> Cargando...</div></div>
     </section>
+    <section class="content-section hidden" id="sectionBracket">
+      <div class="section-header">
+        <h2 class="section-title">Llaves — Eliminatorias</h2>
+      </div>
+      <div id="bracketFull"><div class="loading-state"><i class="ti ti-loader-2 spin"></i> Cargando...</div></div>
+    </section>
+    <section class="content-section hidden" id="sectionStats">
+      <div class="section-header">
+        <h2 class="section-title">Estadísticas</h2>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 0;gap:12px;text-align:center">
+        <i class="ti ti-chart-bar" style="font-size:36px;color:var(--text-3)"></i>
+        <p style="color:var(--text-3);font-size:13px;max-width:320px">Estadísticas detalladas (goleadores, posesión, tarjetas) próximamente.</p>
+      </div>
+    </section>
   </main>
   <aside class="sidebar sidebar--right">
     <div class="sidebar-section">
@@ -883,6 +912,12 @@ const DEMO = {
 
 const UI = {
 
+  /* ---- Bandera: imagen SVG real si hay URL, placeholder neutral si no ---- */
+  flagImg(url, alt = '') {
+    if (url) return `<img class="team-flag" src="${url}" alt="${alt}" loading="lazy" onerror="this.style.display='none'"/>`;
+    return `<span class="team-flag team-flag--placeholder">🏳️</span>`;
+  },
+
   /* ---- Match card ---- */
   matchCard(m) {
     const isLive     = m.status === 'in';
@@ -936,12 +971,12 @@ const UI = {
         </div>
         <div class="match-teams">
           <div class="team-block">
-            <span class="team-flag">${m.home.flag}</span>
+            ${this.flagImg(m.home.flag, m.home.name)}
             <span class="team-name ${homeWinner ? 'team-name--winner' : ''}">${m.home.name}</span>
           </div>
           ${scoreHtml}
           <div class="team-block team-block--right">
-            <span class="team-flag">${m.away.flag}</span>
+            ${this.flagImg(m.away.flag, m.away.name)}
             <span class="team-name ${awayWinner ? 'team-name--winner' : ''}">${m.away.name}</span>
           </div>
         </div>
@@ -957,7 +992,7 @@ const UI = {
         <td>
           <div class="team-td">
             <span class="pos-badge">${t.pos}</span>
-            <span>${t.flag}</span>
+            ${this.flagImg(t.flag, t.name)}
             <span>${t.name}</span>
           </div>
         </td>
@@ -994,7 +1029,7 @@ const UI = {
       <div class="quick-row">
         <div class="quick-team">
           <span>${t.pos}</span>
-          <span>${t.flag}</span>
+          ${this.flagImg(t.flag, t.name)}
           <span>${t.name}</span>
         </div>
         <span class="quick-pts">${t.pts}</span>
@@ -1024,11 +1059,11 @@ const UI = {
           <div class="bracket-round">${m.group || 'Octavos'}</div>
           <div class="bracket-match">
             <div class="bracket-team ${isPost && m.home.winner ? 'bracket-team--winner' : ''}">
-              <div class="bracket-team-name"><span>${m.home.flag}</span><span>${m.home.name}</span></div>
+              <div class="bracket-team-name">${this.flagImg(m.home.flag, m.home.name)}<span>${m.home.name}</span></div>
               <span class="bracket-score">${m.home.score !== null ? m.home.score : '—'}</span>
             </div>
             <div class="bracket-team ${isPost && m.away.winner ? 'bracket-team--winner' : ''}">
-              <div class="bracket-team-name"><span>${m.away.flag}</span><span>${m.away.name}</span></div>
+              <div class="bracket-team-name">${this.flagImg(m.away.flag, m.away.name)}<span>${m.away.name}</span></div>
               <span class="bracket-score">${m.away.score !== null ? m.away.score : '—'}</span>
             </div>
           </div>
@@ -1041,9 +1076,9 @@ const UI = {
     if (!liveMatches.length) return '<span class="ticker-item">No hay partidos en vivo</span>';
     const items = liveMatches.map(m =>
       `<span class="ticker-item">
-        ${m.home.flag} ${m.home.name}
+        ${this.flagImg(m.home.flag, m.home.name)} ${m.home.name}
         <span class="ticker-score">${m.home.score} – ${m.away.score}</span>
-        ${m.away.name} ${m.away.flag}
+        ${m.away.name} ${this.flagImg(m.away.flag, m.away.name)}
         <span style="opacity:0.6;font-size:11px;margin-left:4px">${m.clock}</span>
       </span>`
     ).join('');
@@ -1218,6 +1253,39 @@ const App = {
     document.getElementById('standingsTable').innerHTML = UI.standingsTable(g);
   },
 
+  /* ---- Llaves completas: agrupa partidos eliminatorios por fase ---- */
+  renderFullBracket() {
+    const { matches } = this.state;
+    const knockoutPhases = ['Ronda de 32', 'Octavos de Final', 'Cuartos de Final', 'Semifinal', 'Tercer Puesto', 'Final'];
+
+    const byPhase = {};
+    matches.forEach(m => {
+      if (knockoutPhases.includes(m.group)) {
+        if (!byPhase[m.group]) byPhase[m.group] = [];
+        byPhase[m.group].push(m);
+      }
+    });
+
+    const phasesWithData = knockoutPhases.filter(p => byPhase[p]?.length > 0);
+
+    if (phasesWithData.length === 0) {
+      document.getElementById('bracketFull').innerHTML =
+        '<div class="empty-state">Las llaves de eliminatoria se mostrarán cuando termine la fase de grupos.</div>';
+      return;
+    }
+
+    const html = phasesWithData.map(phase => `
+      <div style="margin-bottom:24px">
+        <div class="standings-group-title" style="padding:0 0 10px;border:none">${phase}</div>
+        <div class="matches-list">
+          ${byPhase[phase].map(m => UI.matchCard(m)).join('')}
+        </div>
+      </div>
+    `).join('');
+
+    document.getElementById('bracketFull').innerHTML = html;
+  },
+
   /* ---- Navigation ---- */
   setupNav() {
     document.querySelectorAll('.nav-btn').forEach(btn => {
@@ -1270,17 +1338,19 @@ const App = {
     const sections = {
       'partidos': ['sectionLive', 'sectionUpcoming', 'sectionRecent'],
       'posiciones': ['sectionStandings'],
-      'llaves': [],
-      'estadisticas': [],
+      'llaves': ['sectionBracket'],
+      'estadisticas': ['sectionStats'],
     };
 
-    const allSections = ['sectionLive','sectionUpcoming','sectionRecent','sectionStandings'];
+    const allSections = ['sectionLive','sectionUpcoming','sectionRecent','sectionStandings','sectionBracket','sectionStats'];
     allSections.forEach(id => {
       const el = document.getElementById(id);
       if (!el) return;
       const show = (sections[view] || []).includes(id);
       el.classList.toggle('hidden', !show);
     });
+
+    if (view === 'llaves') this.renderFullBracket();
   },
 
   bindGroupButtons() {
@@ -1291,7 +1361,29 @@ const App = {
       const idx    = 'ABCDEFGHIJKL'.indexOf(letter);
       if (idx >= 0 && this.state.standings[idx]) {
         this.state.activeGroup = idx;
+
+        // Resalta el botón de grupo activo en el sidebar
+        document.querySelectorAll('[data-group]').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        // Actualiza el widget pequeño del sidebar derecho
         document.getElementById('quickStandings').innerHTML = UI.quickStandings(this.state.standings[idx]);
+
+        // Cambia a la vista de Posiciones y muestra la tabla completa de ese grupo
+        document.querySelectorAll('[data-view]').forEach(b => b.classList.remove('active'));
+        const posBtn = document.querySelector('[data-view="posiciones"]');
+        if (posBtn) posBtn.classList.add('active');
+        this.showView('posiciones');
+        this.renderStandings(idx);
+
+        if (document.getElementById('groupTabs')) {
+          document.getElementById('groupTabs').innerHTML = UI.groupTabs(this.state.standings, idx);
+          this.bindGroupTabs();
+        }
+      } else if (idx >= 0) {
+        // El grupo existe pero aún no hay datos de standings cargados
+        document.getElementById('quickStandings').innerHTML =
+          '<div class="empty-state" style="padding:8px 0;font-size:11px">Sin datos para este grupo todavía</div>';
       }
     });
   },
