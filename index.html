@@ -383,6 +383,19 @@ a { color: inherit; text-decoration: none; }
   justify-content: space-between;
   gap: 8px;
 }
+.match-goals {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+  margin-top: 2px;
+}
+.match-goals-col { display: flex; flex-direction: column; gap: 3px; flex: 1; }
+.match-goals-col--right { align-items: flex-end; text-align: right; }
+.goal-row { font-size: 11px; color: var(--text-2); display: flex; align-items: center; gap: 5px; }
+.match-goals-col--right .goal-row { flex-direction: row-reverse; }
+.goal-minute { color: var(--text-3); font-size: 10px; }
 .team-block {
   display: flex;
   align-items: center;
@@ -444,6 +457,53 @@ a { color: inherit; text-decoration: none; }
 }
 
 /* ---- Standings ---- */
+/* ---- Team modal ---- */
+.team-modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.65);
+  z-index: 200;
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px;
+}
+.team-modal-overlay.hidden { display: none; }
+.team-modal {
+  background: var(--bg-2);
+  border: 1px solid var(--border-md);
+  border-radius: var(--radius-lg);
+  max-width: 480px;
+  width: 100%;
+  max-height: 85vh;
+  overflow-y: auto;
+  padding: 24px;
+  position: relative;
+}
+.team-modal-close {
+  position: absolute; top: 14px; right: 14px;
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: var(--bg-4);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-2);
+  font-size: 16px;
+}
+.team-modal-close:hover { background: var(--bg-3); color: var(--text-1); }
+.team-modal-header {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 18px;
+}
+.team-modal-flag { width: 44px; height: 32px; object-fit: cover; border-radius: 4px; }
+.team-modal-name { font-family: var(--font-sport); font-size: 22px; font-weight: 800; color: var(--text-1); }
+.team-modal-section-label {
+  font-size: 11px; color: var(--text-3); text-transform: uppercase;
+  letter-spacing: 0.06em; margin: 16px 0 8px;
+}
+.team-modal-match-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 0; border-bottom: 1px solid var(--border);
+  font-size: 12px; color: var(--text-2);
+}
+.team-modal-match-row:last-child { border-bottom: none; }
+
 /* ---- Team stats ---- */
 .team-search-input {
   background: var(--bg-3);
@@ -764,9 +824,9 @@ table.standings tr:hover td { background: var(--bg-4); }
     </div>
     <div class="sidebar-section">
       <div class="sidebar-label">Seguidos</div>
-      <button class="sidebar-btn"><span class="flag">🇪🇨</span> Ecuador</button>
-      <button class="sidebar-btn"><span class="flag">🇦🇷</span> Argentina</button>
-      <button class="sidebar-btn"><span class="flag">🇧🇷</span> Brasil</button>
+      <button class="sidebar-btn" onclick="App.showTeamModal('Ecuador')"><span class="flag">🇪🇨</span> Ecuador</button>
+      <button class="sidebar-btn" onclick="App.showTeamModal('Argentina')"><span class="flag">🇦🇷</span> Argentina</button>
+      <button class="sidebar-btn" onclick="App.showTeamModal('Brazil')"><span class="flag">🇧🇷</span> Brasil</button>
     </div>
   </aside>
   <main class="content">
@@ -846,6 +906,17 @@ table.standings tr:hover td { background: var(--bg-4); }
     </div>
   </aside>
 </div>
+
+<!-- Modal de equipo (Ecuador/Argentina/Brasil seguidos) -->
+<div class="team-modal-overlay hidden" id="teamModalOverlay" onclick="App.closeTeamModal(event)">
+  <div class="team-modal" onclick="event.stopPropagation()">
+    <button class="team-modal-close" onclick="App.closeTeamModal()"><i class="ti ti-x"></i></button>
+    <div id="teamModalContent">
+      <div class="loading-state"><i class="ti ti-loader-2 spin"></i> Cargando...</div>
+    </div>
+  </div>
+</div>
+
 <script>
 /* ===========================
    data.js — ESPN API layer
@@ -1020,6 +1091,23 @@ const UI = {
   },
 
   /* ---- Match card ---- */
+  /* ---- Lista de goleadores con minuto, si hay datos disponibles ---- */
+  matchGoalsList(m) {
+    const homeGoals = m.home.goals || [];
+    const awayGoals = m.away.goals || [];
+    if (homeGoals.length === 0 && awayGoals.length === 0) return '';
+
+    const fmt = (goals) => goals.map(g =>
+      `<div class="goal-row">⚽ ${g.scorer} <span class="goal-minute">${g.minute}${g.penalty ? ' (P)' : ''}</span></div>`
+    ).join('');
+
+    return `
+      <div class="match-goals">
+        <div class="match-goals-col">${fmt(homeGoals)}</div>
+        <div class="match-goals-col match-goals-col--right">${fmt(awayGoals)}</div>
+      </div>`;
+  },
+
   matchCard(m) {
     const isLive     = m.status === 'in';
     const isFinished = m.status === 'post';
@@ -1034,7 +1122,8 @@ const UI = {
     /* Badge izquierdo */
     let badgeHtml = '';
     if (isLive) {
-      badgeHtml = `<span class="badge badge--live"><span class="badge-live-dot"></span>EN VIVO · ${m.clock}</span>`;
+      const periodText = m.periodLabel ? ` · ${m.periodLabel}` : '';
+      badgeHtml = `<span class="badge badge--live"><span class="badge-live-dot"></span>EN VIVO · ${m.clock}${periodText}</span>`;
     } else if (isFinished) {
       badgeHtml = `<span class="badge badge--ft">FT</span>`;
     } else {
@@ -1061,6 +1150,9 @@ const UI = {
     const homeWinner = isFinished && m.home.winner;
     const awayWinner = isFinished && m.away.winner;
 
+    /* Goleadores: se muestran si hay datos, tanto en vivo como finalizados */
+    const goalsHtml = this.matchGoalsList(m);
+
     return `
       <div class="${cardClass}">
         <div class="match-meta">
@@ -1081,6 +1173,7 @@ const UI = {
             <span class="team-name ${awayWinner ? 'team-name--winner' : ''}">${m.away.name}</span>
           </div>
         </div>
+        ${goalsHtml}
       </div>`;
   },
 
@@ -1552,6 +1645,66 @@ const App = {
       const el = document.getElementById(idMap[scrollTarget]);
       if (el) setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
     }
+  },
+
+  /* ---- Modal de equipo seguido (Ecuador/Argentina/Brasil) ---- */
+  showTeamModal(teamName) {
+    const overlay = document.getElementById('teamModalOverlay');
+    const content = document.getElementById('teamModalContent');
+    overlay.classList.remove('hidden');
+    content.innerHTML = '<div class="loading-state"><i class="ti ti-loader-2 spin"></i> Cargando...</div>';
+
+    const stats = this.state.teamStats.find(t => t.name === teamName);
+    const teamMatches = this.state.matches.filter(m =>
+      m.home.name === teamName || m.away.name === teamName
+    );
+
+    if (!stats && teamMatches.length === 0) {
+      content.innerHTML = `
+        <div class="team-modal-header">
+          <span class="team-modal-name">${teamName}</span>
+        </div>
+        <div class="empty-state">Sin datos disponibles para este equipo todavía.</div>`;
+      return;
+    }
+
+    let flagUrl = stats?.flag;
+    if (!flagUrl && teamMatches.length > 0) {
+      const m = teamMatches[0];
+      flagUrl = m.home.name === teamName ? m.home.flag : m.away.flag;
+    }
+
+    const statsHtml = stats ? UI.teamStatCard(stats) : '<div class="empty-state">Aún sin estadísticas de partidos jugados.</div>';
+
+    const matchesHtml = teamMatches.length > 0
+      ? teamMatches.map(m => {
+          const isHome = m.home.name === teamName;
+          const opponent = isHome ? m.away : m.home;
+          const ownScore = isHome ? m.home.score : m.away.score;
+          const oppScore = isHome ? m.away.score : m.home.score;
+          const scoreLabel = m.status === 'pre' ? 'vs' : `${ownScore} – ${oppScore}`;
+          return `<div class="team-modal-match-row">
+            <span>${m.group || ''}</span>
+            <span>vs ${opponent.name}</span>
+            <span style="font-weight:600;color:var(--text-1)">${scoreLabel}</span>
+          </div>`;
+        }).join('')
+      : '<div class="empty-state" style="padding:8px 0">Sin partidos registrados</div>';
+
+    content.innerHTML = `
+      <div class="team-modal-header">
+        ${UI.flagImg(flagUrl, teamName)}
+        <span class="team-modal-name">${teamName}</span>
+      </div>
+      ${statsHtml}
+      <div class="team-modal-section-label">Historial de partidos</div>
+      ${matchesHtml}
+    `;
+  },
+
+  closeTeamModal(event) {
+    if (event && event.target !== event.currentTarget) return;
+    document.getElementById('teamModalOverlay').classList.add('hidden');
   },
 
   bindGroupButtons() {
