@@ -1799,23 +1799,6 @@ const App = {
   showView(view) {
     this.state.activeView = view;
     const sections = {
-      'partidos': ['sectionLive', 'sectionUpcoming', 'sectionRecent'],
-      'posiciones': ['sectionStandings'],
-      'llaves': ['sectionBracket'],
-      'estadisticas': ['sectionStats'],
-    };
-
-    const allSections = ['sectionLive','sectionUpcoming','sectionRecent','sectionStandings','sectionBracket','sectionStats'];
-    allSections.forEach(id => {
-      const el = document.getElementById(id);
-      if (!el) return;
-      const show = (sections[view] || []).includes(id);
-      el.classList.toggle('hidden', !show);
-    });
-
-  showView(view) {
-    this.state.activeView = view;
-    const sections = {
       'partidos':    ['sectionLive', 'sectionUpcoming', 'sectionRecent'],
       'posiciones':  ['sectionStandings'],
       'llaves':      ['sectionBracket'],
