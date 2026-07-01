@@ -777,10 +777,133 @@ table.standings tr:hover td { background: var(--bg-4); }
 ::-webkit-scrollbar-thumb:hover { background: var(--border-md); }
 
 /* ---- Responsive ---- */
+/* ================================
+   RESPONSIVE — Mobile first
+   ================================ */
+
+/* ---- Tablet (≤900px): oculta sidebars, layout 1 col ---- */
 @media (max-width: 900px) {
   .layout { grid-template-columns: 1fr; }
   .sidebar--left, .sidebar--right { display: none; }
   .hero-stats { grid-template-columns: repeat(2, 1fr); }
+  .topnav { padding: 0 14px; gap: 12px; }
+  .logo-text { font-size: 22px; }
+  .logo-icon { width: 40px; height: 40px; }
+}
+
+/* ---- Mobile (≤600px): diseño dedicado ---- */
+@media (max-width: 600px) {
+
+  /* Variables adaptadas */
+  :root {
+    --ticker-h: 32px;
+    --nav-h:    56px;
+  }
+
+  /* Ticker más compacto */
+  .ticker-bar { border-bottom-width: 2px; }
+  .ticker-label { font-size: 10px; padding: 0 10px; }
+  .ticker-inner { font-size: 12px; }
+  .ticker-item { padding: 0 16px; }
+
+  /* Nav simplificada: solo logo + indicador sync */
+  .topnav { padding: 0 14px; gap: 8px; }
+  .logo-text { font-size: 20px; }
+  .logo-icon { width: 36px; height: 36px; padding: 3px; }
+  .main-nav { display: none; } /* reemplazada por bottom nav */
+  .nav-right { margin-left: auto; }
+  .sync-indicator { font-size: 11px; padding: 4px 8px; }
+
+  /* Layout sin sidebars */
+  .layout {
+    grid-template-columns: 1fr;
+    padding-bottom: 68px; /* espacio para bottom nav */
+  }
+  .sidebar--left, .sidebar--right { display: none; }
+
+  /* Content padding ajustado */
+  .content { padding: 12px 14px; gap: 18px; }
+
+  /* Hero stats: 2x2 */
+  .hero-stats { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .stat-card { padding: 10px 12px; }
+  .stat-value { font-size: 26px; }
+  .stat-value--sm { font-size: 16px; }
+  .stat-label, .stat-sub { font-size: 10px; }
+
+  /* Tarjetas de partido */
+  .match-card { padding: 10px 12px; gap: 8px; }
+  .match-meta { font-size: 10px; }
+  .team-name { font-size: 14px; }
+  .team-flag { width: 22px; height: 16px; }
+  .score-main { font-size: 26px; }
+  .score-main--upcoming { font-size: 14px; }
+  .team-block { gap: 7px; }
+  .badge { font-size: 9px; padding: 2px 6px; }
+  .goal-row { font-size: 10px; }
+
+  /* Sección headers */
+  .section-title { font-size: 14px; }
+  .link-btn { font-size: 11px; }
+
+  /* Standings tabla: oculta algunas columnas */
+  table.standings th:nth-child(4),
+  table.standings td:nth-child(4),
+  table.standings th:nth-child(5),
+  table.standings td:nth-child(5) { display: none; }
+  table.standings { font-size: 11px; }
+  .standings-group-title { font-size: 13px; }
+
+  /* Team stats grid: 1 columna */
+  .team-stats-grid { grid-template-columns: 1fr; }
+  .team-search-input { width: 140px; font-size: 12px; }
+
+  /* Modal: pantalla casi completa */
+  .team-modal-overlay { padding: 12px 10px; align-items: flex-end; }
+  .team-modal { max-height: 88vh; border-radius: 16px 16px 0 0; padding: 20px 16px; }
+
+  /* Group tabs en posiciones */
+  .group-tabs { gap: 3px; }
+  .group-tab { padding: 3px 7px; font-size: 10px; }
+
+  /* Noticias en sidebar derecho: ocultas en mobile, se acceden por nav */
+  .sidebar--right { display: none; }
+}
+
+/* ---- Bottom navigation bar (solo móvil ≤600px) ---- */
+.bottom-nav {
+  display: none;
+}
+@media (max-width: 600px) {
+  .bottom-nav {
+    display: flex;
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    height: 60px;
+    background: var(--bg-2);
+    border-top: 1px solid var(--border);
+    z-index: 90;
+    align-items: stretch;
+  }
+  .bottom-nav-btn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    color: var(--text-3);
+    font-size: 9px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    border: none;
+    background: none;
+    transition: color 0.15s;
+  }
+  .bottom-nav-btn i { font-size: 20px; }
+  .bottom-nav-btn.active { color: var(--accent-orange); }
+  .bottom-nav-btn:hover { color: var(--text-1); }
 }
 </style>
 </head>
@@ -890,6 +1013,14 @@ table.standings tr:hover td { background: var(--bg-4); }
       </div>
       <div id="teamStatsGrid"><div class="loading-state"><i class="ti ti-loader-2 spin"></i> Cargando...</div></div>
     </section>
+
+    <!-- Sección noticias: visible solo en móvil via bottom nav -->
+    <section class="content-section hidden" id="sectionNews">
+      <div class="section-header">
+        <h2 class="section-title">Noticias del Mundial</h2>
+      </div>
+      <div id="newsFeedMobile"><div class="loading-state"><i class="ti ti-loader-2 spin"></i> Cargando...</div></div>
+    </section>
   </main>
   <aside class="sidebar sidebar--right">
     <div class="sidebar-section">
@@ -906,6 +1037,30 @@ table.standings tr:hover td { background: var(--bg-4); }
     </div>
   </aside>
 </div>
+
+<!-- Bottom nav (solo visible en móvil) -->
+<nav class="bottom-nav" id="bottomNav">
+  <button class="bottom-nav-btn active" data-bnav="partidos">
+    <i class="ti ti-calendar-event"></i>
+    <span>Partidos</span>
+  </button>
+  <button class="bottom-nav-btn" data-bnav="posiciones">
+    <i class="ti ti-table"></i>
+    <span>Tabla</span>
+  </button>
+  <button class="bottom-nav-btn" data-bnav="llaves">
+    <i class="ti ti-tournament"></i>
+    <span>Llaves</span>
+  </button>
+  <button class="bottom-nav-btn" data-bnav="estadisticas">
+    <i class="ti ti-chart-bar"></i>
+    <span>Stats</span>
+  </button>
+  <button class="bottom-nav-btn" data-bnav="noticias">
+    <i class="ti ti-news"></i>
+    <span>Noticias</span>
+  </button>
+</nav>
 
 <!-- Modal de equipo (Ecuador/Argentina/Brasil seguidos) -->
 <div class="team-modal-overlay hidden" id="teamModalOverlay" onclick="App.closeTeamModal(event)">
@@ -1375,10 +1530,42 @@ const App = {
     this.setupNav();
     this.setupSidebar();
     this.setupTeamSearch();
+    this.setupBottomNav();
     document.getElementById('groupList').innerHTML = UI.groupList();
     this.bindGroupButtons();
     await this.refresh();
     this.scheduleRefresh();
+  },
+
+  /* ---- Bottom nav (móvil) ---- */
+  setupBottomNav() {
+    document.querySelectorAll('[data-bnav]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const view = btn.dataset.bnav;
+        // Sincroniza también el sidebar desktop si está visible
+        document.querySelectorAll('[data-view]').forEach(b => b.classList.remove('active'));
+        const sideBtn = document.querySelector(`[data-view="${view}"]`);
+        if (sideBtn) sideBtn.classList.add('active');
+        this.showView(view);
+      });
+    });
+  },
+
+  /* ---- Noticias en móvil (sin sidebar) ---- */
+  renderMobileNews() {
+    const el = document.getElementById('newsFeedMobile');
+    if (!el) return;
+    const { news } = this.state;
+    if (!news.length) {
+      el.innerHTML = '<div class="empty-state">Sin noticias disponibles</div>';
+      return;
+    }
+    el.innerHTML = news.map(a => `
+      <div class="news-item" onclick="window.open('${a.link}','_blank')">
+        <div class="news-source"><i class="ti ti-news" style="font-size:11px"></i> ${a.source}</div>
+        <div class="news-title">${a.title}</div>
+        <div class="news-time">${a.time}</div>
+      </div>`).join('');
   },
 
   /* ---- Buscador de equipos en la sección Estadísticas ---- */
@@ -1626,8 +1813,32 @@ const App = {
       el.classList.toggle('hidden', !show);
     });
 
-    if (view === 'llaves') this.renderFullBracket();
+  showView(view) {
+    this.state.activeView = view;
+    const sections = {
+      'partidos':    ['sectionLive', 'sectionUpcoming', 'sectionRecent'],
+      'posiciones':  ['sectionStandings'],
+      'llaves':      ['sectionBracket'],
+      'estadisticas':['sectionStats'],
+      'noticias':    ['sectionNews'],
+    };
+
+    const allSections = ['sectionLive','sectionUpcoming','sectionRecent','sectionStandings','sectionBracket','sectionStats','sectionNews'];
+    allSections.forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const show = (sections[view] || []).includes(id);
+      el.classList.toggle('hidden', !show);
+    });
+
+    if (view === 'llaves')       this.renderFullBracket();
     if (view === 'estadisticas') this.renderTeamStats();
+    if (view === 'noticias')     this.renderMobileNews();
+
+    // Sincroniza bottom nav con la vista activa
+    document.querySelectorAll('[data-bnav]').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.bnav === view);
+    });
   },
 
   /* ---- Navegación desde las tarjetas de stats del hero ---- */
