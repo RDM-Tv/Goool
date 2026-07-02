@@ -457,6 +457,46 @@ a { color: inherit; text-decoration: none; }
 }
 
 /* ---- Standings ---- */
+/* ---- News grid (sección Noticias) ---- */
+.news-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+}
+.news-card {
+  background: var(--bg-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: border-color 0.15s, transform 0.1s;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.news-card:hover { border-color: var(--border-md); transform: translateY(-1px); }
+.news-card-source {
+  font-size: 10px;
+  color: var(--accent-orange);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-weight: 600;
+}
+.news-card-title {
+  font-size: 14px;
+  color: var(--text-1);
+  line-height: 1.45;
+  font-weight: 500;
+}
+.news-card-time { font-size: 11px; color: var(--text-3); }
+
+@media (max-width: 600px) {
+  .news-grid { grid-template-columns: 1fr; }
+}
+
 /* ---- Team modal ---- */
 .team-modal-overlay {
   position: fixed; inset: 0;
@@ -1557,15 +1597,18 @@ const App = {
     if (!el) return;
     const { news } = this.state;
     if (!news.length) {
-      el.innerHTML = '<div class="empty-state">Sin noticias disponibles</div>';
+      el.innerHTML = '<div class="empty-state">Sin noticias disponibles por el momento.</div>';
       return;
     }
-    el.innerHTML = news.map(a => `
-      <div class="news-item" onclick="window.open('${a.link}','_blank')">
-        <div class="news-source"><i class="ti ti-news" style="font-size:11px"></i> ${a.source}</div>
-        <div class="news-title">${a.title}</div>
-        <div class="news-time">${a.time}</div>
-      </div>`).join('');
+    el.innerHTML = `
+      <div class="news-grid">
+        ${news.map(a => `
+          <div class="news-card" onclick="window.open('${a.link}','_blank')">
+            <div class="news-card-source"><i class="ti ti-news"></i> ${a.source}</div>
+            <div class="news-card-title">${a.title}</div>
+            <div class="news-card-time">${a.time}</div>
+          </div>`).join('')}
+      </div>`;
   },
 
   /* ---- Buscador de equipos en la sección Estadísticas ---- */
@@ -1759,7 +1802,11 @@ const App = {
         if (section === 'mundial') {
           this.hideComingSoon();
           this.showView(this.state.activeView);
+        } else if (section === 'noticias') {
+          this.hideComingSoon();
+          this.showView('noticias');
         } else {
+          // LigaPro y Sudamericana: próximamente
           this.showComingSoon(section);
         }
       });
@@ -1767,7 +1814,7 @@ const App = {
   },
 
   showComingSoon(section) {
-    const names = { ligapro: 'LigaPro', sudamericana: 'Sudamericana', noticias: 'Noticias' };
+    const names = { ligapro: 'LigaPro', sudamericana: 'Sudamericana' };
     const main = document.getElementById('mainContent');
     main.dataset.hiddenContent = main.innerHTML;
     main.innerHTML = `
